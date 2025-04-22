@@ -13,21 +13,20 @@
         const params = new URLSearchParams(location.search);
         if (!params.get("room")) location.href = "/";
 
-
+        
     </script>
 
     <style>
         @media (min-width: 768px) {
             .container-room .left-cont .footer .utils .menu {
-                display: none;
-            }
-
-            .dropdown-menu {
-                display: none;
-            }
+            display:none;
+        }
+        .dropdown-menu {
+            display:none;
+        }
         }
 
-
+        
         /* Mặc định nút ẩn, menu hiện */
         #menu-toggle-btn {
             display: none;
@@ -45,8 +44,8 @@
         @media (max-width: 768px) {
             .right-cont {
                 position: fixed;
-                width: 80% !important;
-                height: 80% !important;
+                width:80% !important;
+                height:80% !important;
                 top: 60px;
                 right: 10px;
                 background-color: white;
@@ -55,7 +54,6 @@
                 z-index: 1000;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             }
-
             .container-room .right-cont .chat-cont {
                 height: 80%;
             }
@@ -242,11 +240,11 @@
 
     function handleResponsiveLayout(e) {
         if (e.matches) {
-            // Nếu màn hình nhỏ (dưới 768px)
-            rightCont.classList.add('d-none');
+        // Nếu màn hình nhỏ (dưới 768px)
+        rightCont.classList.add('d-none');
         } else {
-            // Nếu màn hình lớn trở lại
-            rightCont.classList.remove('d-none');
+        // Nếu màn hình lớn trở lại
+        rightCont.classList.remove('d-none');
         }
     }
     // Khởi tạo lắng nghe thay đổi
@@ -254,19 +252,7 @@
     mediaQuery.addEventListener("change", handleResponsiveLayout);
     // Gọi ngay khi trang tải để đặt class phù hợp
     handleResponsiveLayout(mediaQuery);
-    // Click ra ngoài thì ẩn right-cont nếu đang hiển thị
-    document.addEventListener("click", function (e) {
-        const isSmallScreen = window.innerWidth <= 768;
-        const isVisible = !rightCont.classList.contains("d-none");
 
-        if (
-            isSmallScreen &&
-            isVisible &&
-            !rightCont.contains(e.target)
-        ) {
-            rightCont.classList.add("d-none");
-        }
-    });
     if (toggleBtn && rightCont) {
         toggleBtn.addEventListener("click", () => {
             const isVisible = rightCont.style.display === "block";
@@ -291,6 +277,7 @@
                 !dropdownMenu.contains(e.target)
             ) {
                 dropdownMenu.classList.add("d-none"); // Thêm lại class d-none để ẩn
+                rightCont.classList.add('d-none');
             }
         });
 
@@ -313,5 +300,4 @@
     window.openChat = openChat;
     window.openSettings = openSettings;
     window.logout = logout;</script>
-
 </html>
