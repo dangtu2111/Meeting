@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>QuickMeet Room</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://kit.fontawesome.com/6510466b6c.js" crossorigin="anonymous"></script>
+    <script>
+        // Kiểm tra nếu không có room thì chuyển về trang chủ
+        const params = new URLSearchParams(location.search);
+        if (!params.get("room")) location.href = "/";
+
+
+    </script>
+
+    <style>
+        @media (min-width: 768px) {
+            .container-room .left-cont .footer .utils .menu {
+                display: none;
+            }
+
+            .dropdown-menu {
+                display: none;
+            }
+        }
+
+
+        /* Mặc định nút ẩn, menu hiện */
+        #menu-toggle-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Trên màn hình nhỏ */
+        @media (max-width: 768px) {
+            .right-cont {
+                position: fixed;
+                width: 80% !important;
+                height: 80% !important;
+                top: 60px;
+                right: 10px;
+                background-color: white;
+                border: 1px solid #ccc;
+                padding: 10px;
+                z-index: 1000;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .container-room .right-cont .chat-cont {
+                height: 80%;
+            }
+
+            .left-cont {
+                width: 100% !important;
+            }
+
+            #menu-toggle-btn {
+                display: block;
+            }
+
+            .footer .copycode-cont {
+                display: none !important;
+            }
+
+            .overlay .box {
+                width: 80%;
+                margin: 0 auto;
+                height: 200px;
+                background-color: #ffffff;
+                margin-top: 100px;
+                border-radius: 10px;
+                text-align: center;
+            }
+
+
+
+            .container-room .left-cont .footer .utils .menu {
+
+                text-align: center;
+                color: #000;
+                padding: 10px;
+                height: 40px;
+                width: 40px;
+                border-radius: 100px;
+                transition: background-color 0.3s;
+            }
+
+            .d-none {
+                display: none;
+            }
+
+            .dropdown-menu {
+                position: absolute;
+                bottom: 60px;
+                right: 20px;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+            }
+
+            .dropdown-menu ul {
+                list-style: none;
+                margin: 0;
+                padding: 10px;
+            }
+
+            .dropdown-menu ul li {
+                padding: 8px 12px;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            .dropdown-menu ul li:hover {
+                background-color: #f2f2f2;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay" id="overlay">
+        <div class="box">
+            <div class="head-name">Enter a Name</div>
+            <input type="text" class="name-field" placeholder="Type here.." id="name-field"></input><br>
+            <button class="continue-name">Continue</button>
+
+        </div>
+    </div>
+    <div class="container-room">
+        <div class="left-cont">
+
+            <div class="video-cont-single" id="vcont">
+                <div class="video-box">
+                    <video class="video-frame" id="vd1" autoplay playsinline>
+                    </video>
+                    <div class="nametag" id="myname">yourname</div>
+                    <div class="mute-icon" id="mymuteicon"><i class="fas fa-microphone-slash"></i></div>
+                    <div class="video-off" id="myvideooff">Video Off</div>
+                </div>
+            </div>
+
+            <div class="whiteboard-cont"><canvas id="whiteboard" height="1000" width="1000"></canvas>
+                <div class="colors-cont">
+                    <div class="black" onclick="setColor('black')"></div>
+                    <div class="red" onclick="setColor('#e74c3c')"></div>
+                    <div class="yellow" onclick="setColor('#f1c40f')"></div>
+                    <div class="green" onclick="setColor('#badc58')"></div>
+                    <div class="blue" onclick="setColor('#3498db')"></div>
+                    <div class="orange" onclick="setColor('#e67e22')"></div>
+                    <div class="purple" onclick="setColor('#9b59b6')"></div>
+                    <div class="pink" onclick="setColor('#fd79a8')"></div>
+                    <div class="brown" onclick="setColor('#834c32')"></div>
+                    <div class="grey" onclick="setColor('gray')"></div>
+                    <div class="eraser" onclick="setEraser()"><i class="fas fa-eraser"></i></div>
+                    <div class="clearboard" onclick="clearBoard()"><i class="fas fa-trash-alt"></i></div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="utils">
+
+                    <div class="audio">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="novideo">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="screenshare tooltip">
+                        <i class="fas fa-desktop"></i>
+                        <span class="tooltiptext">Share Screen</span>
+                    </div>
+                    <div class="board-icon tooltip">
+                        <i class="fas fa-chalkboard"></i>
+                        <span class="tooltiptext">Whiteboard</span>
+                    </div>
+                    <div class="cutcall tooltip">
+                        <i class="fas fa-phone-slash"></i>
+                        <span class="tooltiptext">Leave Call</span>
+                    </div>
+                    <div class="menu tooltip">
+                        <i class="fas fa-ellipsis-v" id="menu-toggle-icon"></i>
+                        <span class="tooltiptext">Menu</span>
+                    </div>
+
+                    <div id="dropdown-menu" class="dropdown-menu d-none">
+                        <ul>
+                            <li onclick="openChat()">Mở chat</li>
+                            <li onclick="openSettings()">Cài đặt</li>
+                            <li onclick="logout()">Đăng xuất</li>
+                        </ul>
+                    </div>
+
+
+
+                </div>
+                <div class="copycode-cont">
+                    <div class="roomcode"></div>
+                    <button class="copycode-button" onclick="CopyClassText()">Copy Code</button>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="right-cont">
+            <div class="head-title">
+
+                <div class="chats"><i class="fas fa-comment-alt mr-1"></i>Chats</div>
+                <div class="attendies"><i class="fas fa-users mr-1"></i>Attendies</div>
+
+
+            </div>
+
+            <div class="chat-cont">
+
+            </div>
+            <div class="chat-input-cont">
+                <div class="ci-cont"><input type="text" class="chat-input" placeholder="Type chat here.."></div>
+                <div class="ci-send"><button class="chat-send">Send</button></div>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/room.js"></script>
+</body>
+<script>// Toggle hiển thị .right-cont (menu phụ bên phải)
+    const toggleBtn = document.getElementById("menu-toggle-btn");
+    const rightCont = document.querySelector(".right-cont");
+
+    function handleResponsiveLayout(e) {
+        if (e.matches) {
+            // Nếu màn hình nhỏ (dưới 768px)
+            rightCont.classList.add('d-none');
+        } else {
+            // Nếu màn hình lớn trở lại
+            rightCont.classList.remove('d-none');
+        }
+    }
+    // Khởi tạo lắng nghe thay đổi
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    mediaQuery.addEventListener("change", handleResponsiveLayout);
+    // Gọi ngay khi trang tải để đặt class phù hợp
+    handleResponsiveLayout(mediaQuery);
+    // Click ra ngoài thì ẩn right-cont nếu đang hiển thị
+    document.addEventListener("click", function (e) {
+        const isSmallScreen = window.innerWidth <= 768;
+        const isVisible = !rightCont.classList.contains("d-none");
+
+        if (
+            isSmallScreen &&
+            isVisible &&
+            !rightCont.contains(e.target)
+        ) {
+            rightCont.classList.add("d-none");
+        }
+    });
+    if (toggleBtn && rightCont) {
+        toggleBtn.addEventListener("click", () => {
+            const isVisible = rightCont.style.display === "block";
+            rightCont.style.display = isVisible ? "none" : "block";
+        });
+    }
+
+    // Toggle dropdown menu (biểu tượng 3 chấm)
+    const toggleIcon = document.querySelector(".menu");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    if (toggleIcon && dropdownMenu) {
+        toggleIcon.addEventListener("click", function (e) {
+            e.stopPropagation(); // Ngăn click lan ra ngoài
+            dropdownMenu.classList.toggle("d-none"); // Toggle class d-none
+        });
+
+        // Click bên ngoài để ẩn dropdown menu
+        document.addEventListener("click", function (e) {
+            if (
+                !toggleIcon.contains(e.target) &&
+                !dropdownMenu.contains(e.target)
+            ) {
+                dropdownMenu.classList.add("d-none"); // Thêm lại class d-none để ẩn
+            }
+        });
+
+    }
+
+    // Các hành động menu giả lập
+    function openChat() {
+        rightCont.classList.remove('d-none');
+    }
+
+    function openSettings() {
+        alert("Mở cài đặt...");
+    }
+
+    function logout() {
+        alert("Đăng xuất...");
+    }
+
+    // Gắn các hàm nếu cần
+    window.openChat = openChat;
+    window.openSettings = openSettings;
+    window.logout = logout;</script>
+
+</html>
