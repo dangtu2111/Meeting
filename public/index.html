@@ -54,6 +54,17 @@
     <!-- </div> -->
 
     <script src="js/landing.js"></script>
+    <script>
+        document.getElementById("createroom").addEventListener("click", function () {
+          const password = prompt("Please enter the password:");
+          if (password === "abcxyz@") {
+            alert("Password correct. Room is being created...");
+            // Thêm logic tạo phòng ở đây nếu cần
+          } else {
+            alert("Incorrect password!");
+          }
+        });
+      </script>
 </body>
 
 </html>
